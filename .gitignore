@@ -1,0 +1,59 @@
+# Data files - troppo grandi per GitHub
+*.xlsx
+*.xls
+*.csv
+*.parquet
+*.joblib
+*.pkl
+*.h5
+*.pt
+
+# Ma mantieni i piccoli file di config
+!**/config.json
+!**/features.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.eggs/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Node
+node_modules/
+package-lock.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary
+tmp/
+temp/
