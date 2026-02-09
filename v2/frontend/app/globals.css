@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.card {
+  @apply bg-gray-800 rounded-lg p-6 border border-gray-700;
+}
+
+.btn-primary {
+  @apply bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition;
+}
+
+.stat-value {
+  @apply text-3xl font-bold;
+}
+
+.stat-label {
+  @apply text-gray-400 text-sm;
+}
+
+.value-bet {
+  @apply bg-green-900/30 border-green-500;
+}
+
+.table-header {
+  @apply bg-gray-700 text-left;
+}
+
+.table-row {
+  @apply border-b border-gray-700 hover:bg-gray-700/50;
+}
+
+/* Probability bars */
+.prob-bar {
+  @apply h-2 rounded-full;
+}
+
+.prob-home {
+  @apply bg-blue-500;
+}
+
+.prob-draw {
+  @apply bg-gray-500;
+}
+
+.prob-away {
+  @apply bg-red-500;
+}
+
+/* Confidence indicator */
+.confidence-high {
+  @apply text-green-400;
+}
+
+.confidence-medium {
+  @apply text-yellow-400;
+}
+
+.confidence-low {
+  @apply text-red-400;
+}

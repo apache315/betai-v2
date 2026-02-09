@@ -1,0 +1,8 @@
+# BetAI v2 - Python dependencies for ML training
+# Install with: pip install -r requirements.txt
+
+xgboost>=2.0.0
+scikit-learn>=1.3.0
+optuna>=3.4.0
+pandas>=2.0.0
+numpy>=1.24.0

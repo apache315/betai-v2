@@ -1,0 +1,73 @@
+name: Daily Predictions
+
+on:
+  schedule:
+    # Run at 8:00 AM UTC every day
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download latest data
+        run: npm run download
+
+      - name: Build features
+        run: npm run features
+
+      - name: Generate predictions
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: npm run predict > predictions.txt 2>&1
+
+      - name: Upload predictions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: predictions-${{ github.run_number }}
+          path: predictions.txt
+          retention-days: 30
+
+      # Optional: Send to Telegram
+      - name: Send to Telegram
+        if: ${{ secrets.TELEGRAM_BOT_TOKEN != '' }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          # Extract value bets from predictions
+          VALUE_BETS=$(grep -A5 "VALUE BETS" predictions.txt || echo "No value bets found")
+
+          # Send message via Telegram API
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d parse_mode="Markdown" \
+            -d text="🎯 *BetAI Daily Predictions*
+
+          $(date '+%Y-%m-%d')
+
+          \`\`\`
+          ${VALUE_BETS}
+          \`\`\`"

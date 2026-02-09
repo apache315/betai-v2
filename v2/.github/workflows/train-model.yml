@@ -1,0 +1,76 @@
+name: Train Model
+
+on:
+  schedule:
+    # Run weekly on Sunday at 2:00 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual trigger
+    inputs:
+      validate_only:
+        description: 'Run validation only (no model save)'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download all historical data
+        run: npm run download
+
+      - name: Build features (all leagues)
+        run: npm run features
+
+      - name: Train XGBoost model
+        run: |
+          if [ "${{ github.event.inputs.validate_only }}" = "true" ]; then
+            npm run train -- --validate-only
+          else
+            npm run train
+          fi
+
+      - name: Run backtest
+        run: npm run backtest > backtest-results.txt 2>&1
+
+      - name: Upload training artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-${{ github.run_number }}
+          path: |
+            data/processed/model.json
+            data/processed/model_meta.json
+            backtest-results.txt
+          retention-days: 90
+
+      - name: Comment results
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "## Training Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          tail -50 backtest-results.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

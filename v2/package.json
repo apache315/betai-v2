@@ -1,0 +1,40 @@
+{
+  "name": "betai-v2",
+  "version": "2.0.0",
+  "description": "BetAI v2 - ML-based football prediction system with free data sources",
+  "type": "module",
+  "scripts": {
+    "download": "tsx scripts/download-data.ts",
+    "download:xg": "tsx scripts/download-xg.ts",
+    "import": "tsx scripts/import-kaggle-data.ts",
+    "convert": "tsx scripts/convert-to-xg.ts",
+    "validate": "tsx scripts/validate-xg.ts",
+    "features": "tsx scripts/build-features.ts",
+    "features:full": "tsx scripts/build-features.ts",
+    "features:v2only": "tsx scripts/build-features.ts --no-archive",
+    "select-features": "tsx scripts/select-features.ts",
+    "train": "tsx scripts/train-model.ts",
+    "train:selected": "tsx scripts/train-model.ts --selected-features data/processed/selected_features.json",
+    "train:gnn": "tsx scripts/train-gnn.ts",
+    "train:ensemble": "tsx scripts/train-gnn.ts --skip-gnn",
+    "backtest": "tsx scripts/backtest.ts",
+    "predict": "tsx scripts/predict-today.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "csv-parse": "^5.5.0",
+    "cheerio": "^1.0.0",
+    "express": "^4.21.0",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

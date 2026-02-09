@@ -1,12 +1,16 @@
 # Data files - troppo grandi per GitHub
 *.xlsx
 *.xls
-*.csv
 *.parquet
 *.joblib
 *.pkl
 *.h5
 *.pt
+
+# Large data folders
+v2/data/raw/
+v2/data/processed/
+footballxg/data/
 
 # Ma mantieni i piccoli file di config
 !**/config.json
@@ -41,6 +45,10 @@ nul
 # Node
 node_modules/
 package-lock.json
+
+# Next.js
+.next/
+out/
 
 # Jupyter
 .ipynb_checkpoints/
